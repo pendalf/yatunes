@@ -10,6 +10,8 @@ export const videoPlayerInit = () => {
     const videoVolume = document.querySelector('.video-volume');
     const videoFullscreen = document.querySelector('.video-fullscreen');
     const videoVolumeMute = document.querySelector('.video-volume__mute');
+    const videoVolumeDown = document.querySelector('.video-volume__down');
+    const videoVolumeUp = document.querySelector('.video-volume__up');
 
     // Переключение иконок
     const toggleIcon = () => {
@@ -43,9 +45,18 @@ export const videoPlayerInit = () => {
     const addZero = n => n < 10 ? '0' + n : n;
 
     // Изменение громкости
-    const changeValume = () => {
+    const changeValume = (direction = 0) => {
+        if (direction !== 0) {
+            videoVolume.value = +videoVolume.value + (direction * 10);
+            if (videoVolume.value > 100) {
+                videoVolume.value = 100;
+            } else if (videoVolume.value < 0) {
+                videoVolume.value = 0;
+            }
+        }
         const valueVolume = videoVolume.value;
         videoPlayer.volume = valueVolume / 100;
+        toggleMuteIcon();
     };
 
     // Реакция иконки включения/выключения звука
@@ -74,6 +85,7 @@ export const videoPlayerInit = () => {
         }
         toggleMuteIcon();
     };
+
 
 
     // Навешиывание событий на элементы управления
@@ -110,7 +122,9 @@ export const videoPlayerInit = () => {
         videoPlayer.currentTime = (duration * value) / 100;
     });
     changeValume();
-    videoVolume.addEventListener('input', changeValume);
+    videoVolume.addEventListener('input', () => {
+        changeValume();
+    });
 
     // Переключение в полноэкранный режим
     videoFullscreen.addEventListener('click', () => {
@@ -121,6 +135,14 @@ export const videoPlayerInit = () => {
     videoPlayer.addEventListener('volumechange', () => {
         videoVolume.value = videoPlayer.volume * 100;
     });
+
+    // Работа с кнопками громкости
     videoVolumeMute.addEventListener('click', toggleMute);
+    videoVolumeDown.addEventListener('click', () => {
+        changeValume(-1);
+    });
+    videoVolumeUp.addEventListener('click', () => {
+        changeValume(1);
+    });
 
 };
