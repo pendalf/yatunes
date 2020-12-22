@@ -9,6 +9,7 @@ export const videoPlayerInit = () => {
     const videoTimeTotal = document.querySelector('.video-time__total');
     const videoVolume = document.querySelector('.video-volume');
     const videoFullscreen = document.querySelector('.video-fullscreen');
+    const videoVolumeMute = document.querySelector('.video-volume__mute');
 
     // Переключение иконок
     const toggleIcon = () => {
@@ -22,7 +23,9 @@ export const videoPlayerInit = () => {
     };
 
     // Переключение проигрывания видео
-    const togglePlay = () => {
+    const togglePlay = (e) => {
+        e.preventDefault();
+
         if (videoPlayer.paused) {
             videoPlayer.play();
         } else {
@@ -43,6 +46,33 @@ export const videoPlayerInit = () => {
     const changeValume = () => {
         const valueVolume = videoVolume.value;
         videoPlayer.volume = valueVolume / 100;
+    };
+
+    // Реакция иконки включения/выключения звука
+    const toggleMuteIcon = () => {
+        if (videoVolume.value > 0) {
+            videoVolumeMute.classList.remove('disabled');
+        } else {
+            videoVolumeMute.classList.add('disabled');
+        }
+    };
+
+    // Включение/выключение звука
+    const toggleMute = () => {
+        if (videoVolume.value > 0) {
+            videoVolume.setAttribute('data-old-volume', videoVolume.value);
+            videoVolume.value = 0;
+            videoPlayer.volume = 0;
+        } else {
+            let volumeOld = videoVolume.getAttribute('data-old-volume');
+            if (volumeOld === null) {
+                videoVolume.setAttribute('data-old-volume', 0);
+                volumeOld = 0;
+            }
+            videoVolume.value = volumeOld;
+            videoPlayer.volume = volumeOld / 100;
+        }
+        toggleMuteIcon();
     };
 
 
@@ -91,5 +121,6 @@ export const videoPlayerInit = () => {
     videoPlayer.addEventListener('volumechange', () => {
         videoVolume.value = videoPlayer.volume * 100;
     });
+    videoVolumeMute.addEventListener('click', toggleMute);
 
 };

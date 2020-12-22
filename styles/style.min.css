@@ -759,10 +759,20 @@ input.video-volume {
 
 .video-icon {
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .video-fullscreen {
     cursor: pointer;
+}
+
+.video-volume__mute {
+    transition: .2s all;
+    opacity: 1;
+}
+
+.video-volume__mute.disabled {
+    opacity: .8;
 }
 
 
