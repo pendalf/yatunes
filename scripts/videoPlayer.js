@@ -1,5 +1,6 @@
 export const videoPlayerInit = () => {
 
+    // получение элементов управиления
     const videoPlayer = document.querySelector('.video-player');
     const videoButtonPlay = document.querySelector('.video-button__play');
     const videoButtonStop = document.querySelector('.video-button__stop');
@@ -7,6 +8,7 @@ export const videoPlayerInit = () => {
     const videoTimePassed = document.querySelector('.video-time__passed');
     const videoTimeTotal = document.querySelector('.video-time__total');
 
+    // Переключение иконок
     const toggleIcon = () => {
         if (videoPlayer.paused) {
             videoButtonPlay.classList.remove('fa-pause');
@@ -17,6 +19,7 @@ export const videoPlayerInit = () => {
         }
     };
 
+    // Переключение проигрывания видео
     const togglePlay = () => {
         if (videoPlayer.paused) {
             videoPlayer.play();
@@ -25,13 +28,17 @@ export const videoPlayerInit = () => {
         }
     };
 
+    // Остановка проигрывателя
     const stopPlay = () => {
         videoPlayer.pause();
         videoPlayer.currentTime = 0;
     };
 
+    // Добавление переднего нуля для числе меньше 10
     const addZero = n => n < 10 ? '0' + n : n;
 
+
+    // Навешиывание событий на элементы управления
     videoPlayer.addEventListener('click', togglePlay);
     videoButtonPlay.addEventListener('click', togglePlay);
 
@@ -40,6 +47,7 @@ export const videoPlayerInit = () => {
 
     videoButtonStop.addEventListener('click', stopPlay);
 
+    // Обновление времени проигрывния видео
     videoPlayer.addEventListener('timeupdate', () => {
         const currentTime = videoPlayer.currentTime;
         const duration = videoPlayer.duration;
@@ -56,6 +64,7 @@ export const videoPlayerInit = () => {
         videoTimeTotal.textContent = `${addZero(minuteTotal)}:${addZero(secondsTotal)}`;
     });
 
+    // Промотка видео ползунком
     videoProgress.addEventListener('change', () => {
         const duration = videoPlayer.duration;
         const value = videoProgress.value;
