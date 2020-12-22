@@ -7,6 +7,8 @@ export const videoPlayerInit = () => {
     const videoProgress = document.querySelector('.video-progress');
     const videoTimePassed = document.querySelector('.video-time__passed');
     const videoTimeTotal = document.querySelector('.video-time__total');
+    const videoVolume = document.querySelector('.video-volume');
+    const videoFullscreen = document.querySelector('.video-fullscreen');
 
     // Переключение иконок
     const toggleIcon = () => {
@@ -37,6 +39,12 @@ export const videoPlayerInit = () => {
     // Добавление переднего нуля для числе меньше 10
     const addZero = n => n < 10 ? '0' + n : n;
 
+    // Изменение громкости
+    const changeValume = () => {
+        const valueVolume = videoVolume.value;
+        videoPlayer.volume = valueVolume / 100;
+    };
+
 
     // Навешиывание событий на элементы управления
     videoPlayer.addEventListener('click', togglePlay);
@@ -65,10 +73,23 @@ export const videoPlayerInit = () => {
     });
 
     // Промотка видео ползунком
-    videoProgress.addEventListener('change', () => {
+    videoProgress.addEventListener('input', () => {
         const duration = videoPlayer.duration;
         const value = videoProgress.value;
 
         videoPlayer.currentTime = (duration * value) / 100;
     });
+    changeValume();
+    videoVolume.addEventListener('input', changeValume);
+
+    // Переключение в полноэкранный режим
+    videoFullscreen.addEventListener('click', () => {
+        videoPlayer.requestFullscreen();
+    });
+
+    // Позиционирование ползунка громкости при ее изменении в полноэкранном режиме
+    videoPlayer.addEventListener('volumechange', () => {
+        videoVolume.value = videoPlayer.volume * 100;
+    });
+
 };
