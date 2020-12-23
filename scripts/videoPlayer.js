@@ -28,7 +28,7 @@ export const videoPlayerInit = () => {
     const togglePlay = (e) => {
         e.preventDefault();
 
-        if (videoPlayer.paused) {
+        if (videoPlayer.paused && videoPlayer.closest('.player-block').classList.contains('active')) {
             videoPlayer.play();
         } else {
             videoPlayer.pause();
@@ -86,7 +86,46 @@ export const videoPlayerInit = () => {
         toggleMuteIcon();
     };
 
+    // Изменение значения шкалы времени проигрывателя
+    const timeUpdate = (direction = 0) => {
+        const duration = videoPlayer.duration;
+        let currentTime = videoPlayer.currentTime;
+        if (direction !== 0) {
+            currentTime += direction * 5;
+            videoProgress.value = currentTime / duration * 100;
+            videoPlayer.currentTime = currentTime;
+        } else {
+            const value = videoProgress.value;
 
+            videoPlayer.currentTime = (duration * value) / 100;
+        }
+    };
+
+    // Включение/выключение полноэкранного режима
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement && !document.mozFullScreenElement &&
+            !document.webkitFullscreenElement && !document.msFullscreenElement) {
+            if (videoPlayer.requestFullscreen) {
+                videoPlayer.requestFullscreen();
+            } else if (videoPlayer.msRequestFullscreen) {
+                videoPlayer.msRequestFullscreen();
+            } else if (videoPlayer.mozRequestFullScreen) {
+                videoPlayer.mozRequestFullScreen();
+            } else if (videoPlayer.webkitRequestFullscreen) {
+                videoPlayer.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    };
 
     // Навешиывание событий на элементы управления
     videoPlayer.addEventListener('click', togglePlay);
@@ -116,10 +155,7 @@ export const videoPlayerInit = () => {
 
     // Промотка видео ползунком
     videoProgress.addEventListener('input', () => {
-        const duration = videoPlayer.duration;
-        const value = videoProgress.value;
-
-        videoPlayer.currentTime = (duration * value) / 100;
+        timeUpdate();
     });
     changeValume();
     videoVolume.addEventListener('input', () => {
@@ -143,6 +179,48 @@ export const videoPlayerInit = () => {
     });
     videoVolumeUp.addEventListener('click', () => {
         changeValume(1);
+    });
+
+    // Остановка проигрвывния видео, если таба с проигрывателем закрылась
+    document.body.addEventListener('click', () => {
+        if (!videoPlayer.closest('.player-block').classList.contains('active')) {
+            videoPlayer.pause();
+        }
+    });
+
+    // Обработка нажатий клавиш
+    document.addEventListener('keydown', event => {
+        if (videoPlayer.closest('.player-block').classList.contains('active')) {
+
+            switch (event.code) {
+                case 'Space':
+                    togglePlay(event);
+                    break;
+                case 'ArrowRight':
+                    timeUpdate(1);
+                    break;
+                case 'ArrowLeft':
+                    timeUpdate(-1);
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    changeValume(1);
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    changeValume(-1);
+                    break;
+                case 'KeyM':
+                    toggleMute();
+                    break;
+                case 'KeyF':
+                    toggleFullscreen();
+                    break;
+
+                default:
+                    break;
+            }
+        }
     });
 
 };
