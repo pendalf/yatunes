@@ -39,6 +39,17 @@ export const radioPlayerInit = () => {
     };
 
 
+    // Переключение проигрывания радио
+    const togglePlay = e => {
+        e.preventDefault();
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+        toggleIcon();
+    };
+
     // Изменение громкости
     const changeValume = (direction = 0) => {
         if (direction !== 0) {
@@ -104,13 +115,8 @@ export const radioPlayerInit = () => {
     });
 
     // Включение/выключение проигрывания радиостанции
-    radioStop.addEventListener('click', () => {
-        if (audio.paused) {
-            audio.play();
-        } else {
-            audio.pause();
-        }
-        toggleIcon();
+    radioStop.addEventListener('click', event => {
+        togglePlay(event);
     });
 
     // Остановка проигрвывния радио, если таба с проигрывателем закрылась
@@ -131,5 +137,31 @@ export const radioPlayerInit = () => {
     });
     radioVolumeUp.addEventListener('click', () => {
         changeValume(1);
+    });
+
+    // Обработка нажатий клавиш
+    document.addEventListener('keydown', event => {
+        if (radio.closest('.player-block').classList.contains('active')) {
+
+            switch (event.code) {
+                case 'Space':
+                    togglePlay(event);
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    changeValume(1);
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    changeValume(-1);
+                    break;
+                case 'KeyM':
+                    toggleMute();
+                    break;
+
+                default:
+                    break;
+            }
+        }
     });
 };
