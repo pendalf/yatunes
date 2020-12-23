@@ -752,7 +752,8 @@ input[type=range]:focus::-ms-fill-upper {
     color: #F51E38
 }
 
-input.video-volume {
+input.video-volume,
+input.radio-volume {
     max-width: 100px;
     margin-right: 5px;
 }
@@ -766,13 +767,19 @@ input.video-volume {
     cursor: pointer;
 }
 
-.video-volume__mute {
+.video-volume__mute,
+.radio-volume__mute {
     transition: .2s all;
     opacity: 1;
 }
 
-.video-volume__mute.disabled {
+.video-volume__mute.disabled,
+.radio-volume__mute.disabled {
     opacity: .8;
+}
+
+.radio-stop {
+    margin-right: 15px;
 }
 
 
