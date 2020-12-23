@@ -114,6 +114,7 @@ export const videoPlayerInit = () => {
             } else if (videoPlayer.webkitRequestFullscreen) {
                 videoPlayer.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
             }
+            videoPlayer.controls = true;
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
@@ -124,6 +125,7 @@ export const videoPlayerInit = () => {
             } else if (document.webkitExitFullscreen) {
                 document.webkitExitFullscreen();
             }
+            videoPlayer.controls = false;
         }
     };
 
@@ -163,9 +165,7 @@ export const videoPlayerInit = () => {
     });
 
     // Переключение в полноэкранный режим
-    videoFullscreen.addEventListener('click', () => {
-        videoPlayer.requestFullscreen();
-    });
+    videoFullscreen.addEventListener('click', toggleFullscreen);
 
     // Позиционирование ползунка громкости при ее изменении в полноэкранном режиме
     videoPlayer.addEventListener('volumechange', () => {
