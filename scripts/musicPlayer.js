@@ -54,20 +54,31 @@ export const musicPlayerInit = () => {
         loadTrack();
     };
 
+    // Переключение иконок
+    const toggleIcon = () => {
+        if (audioPlayer.paused) {
+            audio.classList.remove('play');
+            audioButtonPlay.classList.add('fa-play');
+            audioButtonPlay.classList.remove('fa-pause');
+        } else {
+            audio.classList.add('play');
+            audioButtonPlay.classList.remove('fa-play');
+            audioButtonPlay.classList.add('fa-pause');
+        }
+    };
+
     // навигация по трекам
     audioNavigation.addEventListener('click', event => {
         const target = event.target;
 
         if (target.classList.contains('audio-button__play')) {
-            audio.classList.toggle('play');
-            audioButtonPlay.classList.toggle('fa-play');
-            audioButtonPlay.classList.toggle('fa-pause');
 
             if (audioPlayer.paused) {
                 audioPlayer.play();
             } else {
                 audioPlayer.pause();
             }
+            toggleIcon();
 
             const track = playlist[trackIndex];
             audioHeader.textContent = track.toUpperCase();
@@ -114,4 +125,9 @@ export const musicPlayerInit = () => {
 
         audioPlayer.currentTime = progress;
     });
+
+    musicPlayerInit.stop = () => {
+        audioPlayer.pause();
+        toggleIcon();
+    };
 };
