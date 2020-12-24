@@ -119,13 +119,6 @@ export const radioPlayerInit = () => {
         togglePlay(event);
     });
 
-    // Остановка проигрвывния радио, если таба с проигрывателем закрылась
-    document.body.addEventListener('click', () => {
-        if (!radio.closest('.player-block').classList.contains('active')) {
-            audio.pause();
-        }
-    });
-
     // Управление громкостью
     changeValume();
     radioVolume.addEventListener('input', () => {
@@ -164,4 +157,10 @@ export const radioPlayerInit = () => {
             }
         }
     });
+
+    // Метод остановки плеера
+    radioPlayerInit.stop = () => {
+        audio.pause();
+        toggleIcon();
+    };
 };

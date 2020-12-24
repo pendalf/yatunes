@@ -181,13 +181,6 @@ export const videoPlayerInit = () => {
         changeValume(1);
     });
 
-    // Остановка проигрвывния видео, если таба с проигрывателем закрылась
-    document.body.addEventListener('click', () => {
-        if (!videoPlayer.closest('.player-block').classList.contains('active')) {
-            videoPlayer.pause();
-        }
-    });
-
     // Обработка нажатий клавиш
     document.addEventListener('keydown', event => {
         if (videoPlayer.closest('.player-block').classList.contains('active')) {
@@ -222,5 +215,11 @@ export const videoPlayerInit = () => {
             }
         }
     });
+
+    // Метод остановки плеера
+    videoPlayerInit.stop = () => {
+        videoPlayer.pause();
+        toggleIcon();
+    };
 
 };
