@@ -753,7 +753,8 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 input.video-volume,
-input.radio-volume {
+input.radio-volume,
+input.audio-volume {
     max-width: 100px;
     margin-right: 5px;
 }
@@ -768,13 +769,15 @@ input.radio-volume {
 }
 
 .video-volume__mute,
-.radio-volume__mute {
+.radio-volume__mute,
+.audio-volume__mute {
     transition: .2s all;
     opacity: 1;
 }
 
 .video-volume__mute.disabled,
-.radio-volume__mute.disabled {
+.radio-volume__mute.disabled,
+.audio-volume__mute.disabled {
     opacity: .8;
 }
 

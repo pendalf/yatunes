@@ -14,7 +14,13 @@ export const musicPlayerInit = () => {
     const audioProgressTiming = document.querySelector('.audio-progress__timing');
     const audioTimeTotal = document.querySelector('.audio-time__total');
 
+    const audioVolume = document.querySelector('.audio-volume');
+    const audioVolumeMute = document.querySelector('.audio-volume__mute');
+    const audioVolumeDown = document.querySelector('.audio-volume__down');
+    const audioVolumeUp = document.querySelector('.audio-volume__up');
+
     const playlist = ['hello', 'flow', 'speed'];
+    let pressShift = false;
 
     let trackIndex = 0;
 
@@ -67,6 +73,59 @@ export const musicPlayerInit = () => {
         }
     };
 
+    // Переключение проигрывания радио
+    const togglePlay = e => {
+        e.preventDefault();
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+        } else {
+            audioPlayer.pause();
+        }
+        toggleIcon();
+    };
+
+    // Изменение громкости
+    const changeValume = (direction = 0) => {
+        if (direction !== 0) {
+            audioVolume.value = +audioVolume.value + (direction * 10);
+            if (audioVolume.value > 100) {
+                audioVolume.value = 100;
+            } else if (audioVolume.value < 0) {
+                audioVolume.value = 0;
+            }
+        }
+        const valueVolume = audioVolume.value;
+        audioPlayer.volume = valueVolume / 100;
+        toggleMuteIcon();
+    };
+
+    // Реакция иконки включения/выключения звука
+    const toggleMuteIcon = () => {
+        if (audioVolume.value > 0) {
+            audioVolumeMute.classList.remove('disabled');
+        } else {
+            audioVolumeMute.classList.add('disabled');
+        }
+    };
+
+    // Включение/выключение звука
+    const toggleMute = () => {
+        if (audioVolume.value > 0) {
+            audioVolume.setAttribute('data-old-volume', audioVolume.value);
+            audioVolume.value = 0;
+            audioPlayer.volume = 0;
+        } else {
+            let volumeOld = audioVolume.getAttribute('data-old-volume');
+            if (volumeOld === null) {
+                audioVolume.setAttribute('data-old-volume', 0);
+                volumeOld = 0;
+            }
+            audioVolume.value = volumeOld;
+            audioPlayer.volume = volumeOld / 100;
+        }
+        toggleMuteIcon();
+    };
+
     // навигация по трекам
     audioNavigation.addEventListener('click', event => {
         const target = event.target;
@@ -92,6 +151,22 @@ export const musicPlayerInit = () => {
             nextTrack();
         }
     });
+
+    // Изменение значения шкалы времени проигрывателя
+    const timeUpdate = (direction = 0) => {
+        if (direction !== 0) {
+            const duration = audioPlayer.duration;
+            let currentTime = audioPlayer.currentTime;
+
+            currentTime += (direction * 10);
+            if (currentTime > duration) {
+                currentTime = duration;
+            } else if (currentTime < 0) {
+                currentTime = 0;
+            }
+            audioPlayer.currentTime = currentTime;
+        }
+    };
 
     // переключение на новый трек после окончания текущего
     audioPlayer.addEventListener('ended', () => {
@@ -124,6 +199,79 @@ export const musicPlayerInit = () => {
         const progress = (x / allWidth) * audioPlayer.duration;
 
         audioPlayer.currentTime = progress;
+    });
+
+    // Управление громкостью
+    changeValume();
+    audioVolume.addEventListener('input', () => {
+        changeValume();
+    });
+    audioVolumeMute.addEventListener('click', toggleMute);
+    audioVolumeDown.addEventListener('click', () => {
+        changeValume(-1);
+    });
+    audioVolumeUp.addEventListener('click', () => {
+        changeValume(1);
+    });
+
+
+    // Обработка нажатий клавиш
+    document.addEventListener('keydown', event => {
+        if (audioPlayer.closest('.player-block').classList.contains('active')) {
+
+            switch (event.code) {
+                case 'Space':
+                    togglePlay(event);
+                    break;
+                case 'ArrowRight':
+                    if (pressShift) {
+                        prevTrack();
+                    } else {
+                        timeUpdate(1);
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (pressShift) {
+                        nextTrack();
+                    } else {
+                        timeUpdate(-1);
+                    }
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    changeValume(1);
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    changeValume(-1);
+                    break;
+                case 'KeyM':
+                    toggleMute();
+                    break;
+                case 'ShiftLeft':
+                case 'ShiftRight':
+                    pressShift = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    });
+    // Обработка нажатий клавиш
+    document.addEventListener('keyup', event => {
+        if (audioPlayer.closest('.player-block').classList.contains('active')) {
+            switch (event.code) {
+
+                case 'ShiftLeft':
+                case 'ShiftRight':
+                    pressShift = false;
+                    break;
+
+                default:
+                    break;
+            }
+        }
     });
 
     musicPlayerInit.stop = () => {
