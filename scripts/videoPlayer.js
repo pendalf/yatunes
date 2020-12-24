@@ -1,3 +1,5 @@
+import { addZero } from './supScript.js';
+
 export const videoPlayerInit = () => {
 
     // получение элементов управиления
@@ -40,9 +42,6 @@ export const videoPlayerInit = () => {
         videoPlayer.pause();
         videoPlayer.currentTime = 0;
     };
-
-    // Добавление переднего нуля для числе меньше 10
-    const addZero = n => n < 10 ? '0' + n : n;
 
     // Изменение громкости
     const changeValume = (direction = 0) => {
